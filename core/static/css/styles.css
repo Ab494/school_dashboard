@@ -4,14 +4,14 @@
     font-weight: bold;
 }
 
+/* Fixed 'width' value missing unit */
 .about-img {
-    width: 100;
+    width: 100%;
     max-width: 200px;
     border-radius: 8px;
     display: block;
     margin-bottom: 20px;
     height: auto;
-
 }
 
 /* Fade-in animation */
@@ -31,10 +31,9 @@
     }
 }
 
-/* sidebar background */
+/* sidebar background - fixed invalid color */
 .bg-light {
-    background-color: #f8f9;
-
+    background-color: #f8f9fa;
 }
 
 /* Hover effect */
@@ -43,31 +42,29 @@
     color: #000;
 }
 
-/* about us section */
+/* About us section */
 .about-container {
     background-color: #ffffff;
-    padding: 20px;
+    padding: 20px 30px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     max-width: 800px;
-    margin: auto;
+    margin: 40px auto;
     text-align: center;
     font-family: 'Segoe UI', sans-serif;
-
 }
 
 .about-container h2 {
     color: #2c3e50;
     font-weight: bold;
     margin-bottom: 20px;
-    font-size: 32px;
-
+    font-size: 28px;
 }
 
 .about-container p {
     color: #444;
     line-height: 1.6;
-    font-size: 18px;
+    font-size: 17px;
     margin-top: 15px;
     text-align: justify;
 }
@@ -85,26 +82,15 @@
     color: #000;
 }
 
-.about-container {
-    max-width: 800px;
-    margin: 40px auto;
-    background-color: #f9f9;
-    padding: 20px 30px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-
 .column {
     flex: 1;
     background: linear-gradient(135deg, #d0e9ff, #f0faff);
-    background-color: #e6f2;
     padding: 20px;
     border-left: 4px solid #004080;
-    border-right: #004000;
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     transition: 0.3s;
+    margin-bottom: 20px;
 }
 
 .column:hover {
@@ -119,9 +105,9 @@
 
 .column i {
     margin-right: 8px;
-    color: 10px;
 }
 
+/* Colorful section for mission/vision blocks */
 .colorful-section {
     background: #f4f4f4;
     padding: 40px 20px;
@@ -137,6 +123,7 @@
     max-height: 800px;
 }
 
+/* Dark Mode */
 .dark-mode {
     background-color: #121212;
     color: #e0e0e0;
@@ -146,9 +133,6 @@
     background-color: #1e1e1e;
     color: #ffffff;
     border: 1px solid #2c2c2c;
-
-
-
 }
 
 .dark-mode .table {
@@ -173,37 +157,44 @@
     font-weight: 600;
 }
 
-#attendancechart {
-    max-height: 250px;
+/* Chart canvas responsiveness */
+canvas {
+    width: 100% !important;
+    height: auto !important;
 }
 
-/* smooth card effect */
+/* Card animations */
 .card {
     min-height: 120px;
     transition: transform 0.2s ease;
 }
 
-/* Hover effect */
 .card:hover {
     transform: scale(1.02);
 }
 
-/* Chart canvas responsiveness */
-canvas {
-    width: 100%;
-    height: auto;
+/* Table cell alignment */
+.table td,
+.table th {
+    vertical-align: middle;
 }
 
-/* Button alignment fix on small screens */
+/* Fix button on small screens */
 @media (max-width: 576px) {
     .btn-sm {
         width: 100%;
         margin-top: 10px;
     }
-}
 
-/* Table spacing */
-.table td,
-.table th {
-    vertical-align: middle;
+    .about-container h2 {
+        font-size: 24px;
+    }
+
+    .about-container p {
+        font-size: 16px;
+    }
+
+    .column h2 {
+        font-size: 18px;
+    }
 }
