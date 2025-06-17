@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="witdh=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ school_name }} - {% block title %}{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
@@ -14,12 +14,17 @@
     <!-- Top Navigation Bar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <a class="navbar-brand d-flex align-items-center" href="{% url 'dashboard' %}">
-            <img src="{% static 'images/logo.png' %}" alt="Logo" height="100" class="me-2">
+            <img src="{% static 'images/logo.png' %}" alt="Logo" height="60" class="me-2">
             {{ school_name }}
         </a>
 
+        <!-- Mobile Toggle Button -->
+        <button class="navbar-toggler d-md-none ms-auto" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar" aria-controls="mobileSidebar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
         {% if user.is_authenticated %}
-        <div class="dropdown ms-auto">
+        <div class="dropdown ms-auto d-none d-md-block">
             <a class="nav-link dropdown-toggle text-white" href="#" id="dropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 Admin
             </a>
@@ -32,9 +37,9 @@
 
     <div class="container-fluid">
         <div class="row">
-            <!-- Sidebar -->
             {% if user.is_authenticated %}
-            <div class="col-md-2 bg-light vh-100 p-3">
+            <!-- Desktop Sidebar -->
+            <div class="col-md-2 d-none d-md-block bg-light vh-100 p-3">
                 <h4 class="text-primary">{{ school_name }}</h4>
                 <div class="list-group">
                     <a href="{% url 'dashboard' %}" class="list-group-item list-group-item-action {% if request.path == '/dashboard/' %}active{% endif %}">Dashboard</a>
@@ -42,7 +47,6 @@
                     <a href="{% url 'add_student' %}" class="list-group-item list-group-item-action {% if request.path == '/add_student/' %}active{% endif %}">Add Student</a>
                     <a href="{% url 'teachers' %}" class="list-group-item list-group-item-action {% if request.path == '/teachers/' %}active{% endif %}">Teachers</a>
                     <a href="{% url 'unit' %}" class="list-group-item list-group-item-action {% if request.path == '/units/' %}active{% endif %}">Units</a>
-                    
                     <a onclick="toggleMenu()" style="cursor: pointer;" class="list-group-item list-group-item-action">See More...</a>
                     <div id="extra-menu" class="collapse">
                         <a href="{% url 'change_password' %}" class="list-group-item list-group-item-action {% if request.path == '/change_password/' %}active{% endif %}">Change Password</a>
@@ -53,6 +57,32 @@
                         <a href="{% url 'mission_vision' %}" class="list-group-item list-group-item-action {% if request.path == '/mission_vision/' %}active{% endif %}">Mission & Vision</a>
                         <a href="{% url 'about' %}" class="list-group-item list-group-item-action {% if request.path == '/about/' %}active{% endif %}">About Us</a>
                         <a href="{% url 'contact' %}" class="list-group-item list-group-item-action {% if request.path == '/contact/' %}active{% endif %}">Contact Us</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile Offcanvas Sidebar -->
+            <div class="offcanvas offcanvas-start bg-light" tabindex="-1" id="mobileSidebar">
+                <div class="offcanvas-header">
+                    <h5 class="offcanvas-title">{{ school_name }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body p-3">
+                    <div class="list-group">
+                        <a href="{% url 'dashboard' %}" class="list-group-item list-group-item-action {% if request.path == '/dashboard/' %}active{% endif %}">Dashboard</a>
+                        <a href="{% url 'students' %}" class="list-group-item list-group-item-action {% if request.path == '/students/' %}active{% endif %}">Students</a>
+                        <a href="{% url 'add_student' %}" class="list-group-item list-group-item-action {% if request.path == '/add_student/' %}active{% endif %}">Add Student</a>
+                        <a href="{% url 'teachers' %}" class="list-group-item list-group-item-action {% if request.path == '/teachers/' %}active{% endif %}">Teachers</a>
+                        <a href="{% url 'unit' %}" class="list-group-item list-group-item-action {% if request.path == '/units/' %}active{% endif %}">Units</a>
+                        <a href="{% url 'change_password' %}" class="list-group-item list-group-item-action {% if request.path == '/change_password/' %}active{% endif %}">Change Password</a>
+                        <a href="{% url 'add_teacher' %}" class="list-group-item list-group-item-action {% if request.path == '/add_teacher/' %}active{% endif %}">Add Teacher</a>
+                        <a href="{% url 'attendance' %}" class="list-group-item list-group-item-action {% if request.path == '/attendance/' %}active{% endif %}">Attendance</a>
+                        <a href="{% url 'add_attendance' %}" class="list-group-item list-group-item-action {% if request.path == '/add_attendance/' %}active{% endif %}">Mark Attendance</a>
+                        <a href="{% url 'attendance_summary' %}" class="list-group-item list-group-item-action {% if request.path == '/attendance_summary/' %}active{% endif %}">Attendance Summary</a>
+                        <a href="{% url 'mission_vision' %}" class="list-group-item list-group-item-action {% if request.path == '/mission_vision/' %}active{% endif %}">Mission & Vision</a>
+                        <a href="{% url 'about' %}" class="list-group-item list-group-item-action {% if request.path == '/about/' %}active{% endif %}">About Us</a>
+                        <a href="{% url 'contact' %}" class="list-group-item list-group-item-action {% if request.path == '/contact/' %}active{% endif %}">Contact Us</a>
+                        <a href="{% url 'logout' %}" class="list-group-item list-group-item-action text-danger">Logout</a>
                     </div>
                 </div>
             </div>
