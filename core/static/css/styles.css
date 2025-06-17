@@ -1,0 +1,209 @@
+.list-group-item.active {
+    background-color: #0d6efd;
+    color: brown;
+    font-weight: bold;
+}
+
+.about-img {
+    width: 100;
+    max-width: 200px;
+    border-radius: 8px;
+    display: block;
+    margin-bottom: 20px;
+    height: auto;
+
+}
+
+/* Fade-in animation */
+.animade-fade {
+    animation: fadeIn 1.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* sidebar background */
+.bg-light {
+    background-color: #f8f9;
+
+}
+
+/* Hover effect */
+.list-group-item:hover {
+    background-color: #e2e6ea;
+    color: #000;
+}
+
+/* about us section */
+.about-container {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    margin: auto;
+    text-align: center;
+    font-family: 'Segoe UI', sans-serif;
+
+}
+
+.about-container h2 {
+    color: #2c3e50;
+    font-weight: bold;
+    margin-bottom: 20px;
+    font-size: 32px;
+
+}
+
+.about-container p {
+    color: #444;
+    line-height: 1.6;
+    font-size: 18px;
+    margin-top: 15px;
+    text-align: justify;
+}
+
+.about-container a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.about-container a:hover {
+    text-decoration: underline;
+}
+
+.about-container strong {
+    color: #000;
+}
+
+.about-container {
+    max-width: 800px;
+    margin: 40px auto;
+    background-color: #f9f9;
+    padding: 20px 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+
+.column {
+    flex: 1;
+    background: linear-gradient(135deg, #d0e9ff, #f0faff);
+    background-color: #e6f2;
+    padding: 20px;
+    border-left: 4px solid #004080;
+    border-right: #004000;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: 0.3s;
+}
+
+.column:hover {
+    transform: translateY(-5px);
+}
+
+.column h2 {
+    color: #004080;
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.column i {
+    margin-right: 8px;
+    color: 10px;
+}
+
+.colorful-section {
+    background: #f4f4f4;
+    padding: 40px 20px;
+}
+
+.collapse {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+}
+
+.collapse.show {
+    max-height: 800px;
+}
+
+.dark-mode {
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+.dark-mode .card {
+    background-color: #1e1e1e;
+    color: #ffffff;
+    border: 1px solid #2c2c2c;
+
+
+
+}
+
+.dark-mode .table {
+    color: #ffffff;
+}
+
+.dark-mode .table thead {
+    background-color: #2d2d2d;
+}
+
+.dark-mode .btn-outline-secondary {
+    color: #fff;
+    border-color: #666;
+}
+
+.dark-mode .btn-outline-secondary:hover {
+    background-color: #444;
+    border-color: #555;
+}
+
+.card-title {
+    font-weight: 600;
+}
+
+#attendancechart {
+    max-height: 250px;
+}
+
+/* smooth card effect */
+.card {
+    min-height: 120px;
+    transition: transform 0.2s ease;
+}
+
+/* Hover effect */
+.card:hover {
+    transform: scale(1.02);
+}
+
+/* Chart canvas responsiveness */
+canvas {
+    width: 100%;
+    height: auto;
+}
+
+/* Button alignment fix on small screens */
+@media (max-width: 576px) {
+    .btn-sm {
+        width: 100%;
+        margin-top: 10px;
+    }
+}
+
+/* Table spacing */
+.table td,
+.table th {
+    vertical-align: middle;
+}

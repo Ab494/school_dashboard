@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title%}Add Attendance{% endblock %}
+{% block content %}
+<h2 class="mt-4 mt-3">Mark Attendance</h2>
+<form method="POST">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label>Student</label>
+
+        <select name="student" class="form-select" required>
+            {% for student in students %}
+            <option value="{{ student.id }}">{{ student.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="mb-3">
+        <label>Status</lebel>
+        <select name="status" class="form-select">
+            <option value="Present">Present</option>
+            <option value="Absent">Absent</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-success">Mark</button>
+</form>
+{% endblock %}
+            

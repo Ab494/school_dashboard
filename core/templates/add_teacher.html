@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title%}Add Teacher{% endblock %}
+{% block content %}
+<h2 class="mt-4 mt-3">Add Teacher</h2>
+<form method="POST">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label>First Name</label>
+        <input type="text" name="first_name" placeholder="First Name" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label>Last Name</label>
+        <input type="text" name="last_name" placeholder="Last Name" class="form-control" required>
+
+    </div>
+    <div class="mb-3">
+        <label>Subject</lebel>
+        <input type="text" name="subject" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label>Email</lebel>
+        <input type="text" name="email" class="form-control" required>
+    </div>
+    <button type="submit" class="btn btn-success">Add</button>
+    
+</form>
+{% endblock %}
+            

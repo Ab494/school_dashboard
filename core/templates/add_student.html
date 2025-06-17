@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title%}Add Student{% endblock %}
+{% block content %}
+<h2 class="mt-4 mt-3">Add Student</h2>
+<form method="POST">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label>Name</label>
+        <input type="text" name="name" class="form_control" required>
+    </div>
+    <div class="mb-3">
+        <label for="admission_number">Admission Number:</lebel>
+        <input type="text" name="admission_number" id="admission_number" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label>Class Level</lebel>
+        <input type="text" name="class_level" class="form-control" required>
+    </div>
+    <button type="submit" class="btn btn-success">Add</button>
+</form>
+{% endblock %}
+            

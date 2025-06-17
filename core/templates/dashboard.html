@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+
+<h1 class="mt-4 text-center text-md-start">Welcome to {{ school_name }} Dashboard</h1>
+
+<!-- Dark Mode Toggle -->
+<div class="d-flex justify-content-center justify-content-md-end mb-3">
+  <button class="btn btn-outline-secondary btn-sm" onclick="toggleDarkMode()">🌙 Dark Mode</button>
+</div>
+
+<!-- Summary Cards -->
+<div class="row g-3">
+  <div class="col-12 col-sm-6 col-lg-4">
+    <a href="{% url 'students' %}" class="text-decoration-none">
+      <div class="card text-white bg-success shadow-sm h-100">
+        <div class="card-body">
+          <h5 class="card-title">Total Students</h5>
+          <p class="card-text fs-4" id="student-count">{{ total_students }}</p>
+        </div>
+      </div>
+    </a>
+  </div>
+
+  <div class="col-12 col-sm-6 col-lg-4">
+    <a href="{% url 'teachers' %}" class="text-decoration-none">
+      <div class="card text-white bg-info shadow-sm h-100">
+        <div class="card-body">
+          <h5 class="card-title">Total Teachers</h5>
+          <p class="card-text fs-4" id="teacher-count">{{ total_teachers }}</p>
+        </div>
+      </div>
+    </a>
+  </div>
+
+  <div class="col-12 col-sm-6 col-lg-4">
+    <div class="card text-white bg-warning shadow-sm h-100">
+      <div class="card-body">
+        <h5 class="card-title">Attendance Records</h5>
+        <p class="card-text fs-4">{{ total_attendance }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Attendance Charts Row -->
+<div class="row mt-4">
+  <!-- Attendance Chart -->
+  <div class="col-md-6 col-sm-12">
+    <div class="card shadow-sm">
+      <div class="card-body p-3">
+        <h6 class="card-title mb-3 text-center">Attendance Chart</h6>
+        <canvas id="attendanceChart" style="max-height: 200px;"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Attendance Summary Chart -->
+  <div class="col-md-6 col-sm-12">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h6 class="card-title mb-3 text-center">Attendance Summary Chart</h6>
+        <canvas id="attendanceSummaryChart" style="max-height: 200px;"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<!-- Recent Students Table -->
+<div class="row mt-4">
+  <div class="col-12">
+    <div class="card shadow-sm">
+      <div class="card-body table-responsive">
+        <h5 class="card-title">Recent Students</h5>
+        <table class="table table-hover table-bordered">
+          <thead class="table-light">
+            <tr>
+              <th>Name</th>
+              <th>Admission No</th>
+              <th>Date Added</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for student in recent_students %}
+            <tr>
+              <td>{{ student.name }}</td>
+              <td>{{ student.admission_number }}</td>
+              <td>{{ student.date_added|date:"M d, Y" }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="3">No recent students.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const ctx = document.getElementById('attendanceChart').getContext('2d');
+  const attendanceChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Present', 'Absent'],
+      datasets: [{
+        data: [{{ present_count }}, {{ absent_count }}],
+        backgroundColor: ['#0d6efd', '#dc3545'],
+        borderWidth: 1
+      }]
+    }
+  });
+
+  const summaryCtx = document.getElementById('attendanceSummaryChart').getContext('2d');
+  const summaryChart = new Chart(summaryCtx, {
+    type: 'bar',
+    data: {
+      labels: ['Present', 'Absent'],
+      datasets: [{
+        label: 'Students',
+        data: [{{ total_present|default:0 }}, {{total_absent|default:0 }}],
+        backgroundColor: ['#198754', '#dc3545']
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+
+  function toggleDarkMode() {
+    document.body.classList.toggle('dark-mode');
+  }
+</script>
+
+
+{% endblock %}

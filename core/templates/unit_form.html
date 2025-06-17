@@ -1,0 +1,11 @@
+{% extends 'base.html' %} 
+{% block content %}
+<h2>{{ form.instance.id|yesno:"Edit Unit, Add Unit" }}</h2>
+    <form method="post">
+        {% csrf_token %} 
+        {{ form.as_p }} 
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a href="{% url 'unit_list' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+{% endblock %} 
+

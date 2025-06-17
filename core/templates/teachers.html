@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Teachers{% endblock %}
+{% block content %}
+
+<h2 class="mt-4 mt-3">Teacher List</h2>
+<table class="table table-bordered">
+    <thead class="table-dark">
+        <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Subject</th>
+            <th>Delete</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for teacher in teachers %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ teacher.first_name}} {{ teacher.last_name}}</td>
+            <td>{{ teacher.email }}</td>
+            <td>{{ teacher.subject }}</td>
+            <td>
+                <a href="{% url 'delete_teacher' teacher.id %}" class="btn btn-danger btn-sm">Delete</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="3">No teachers found.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
