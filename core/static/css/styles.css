@@ -198,3 +198,54 @@ canvas {
         font-size: 18px;
     }
 }
+
+/* System-wide font styles */
+html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    line-height: 1.6;
+    color: #333;
+}
+
+/* Mobile font scaling */
+@media (max-width: 576px) {
+    html {
+        font-size: 18px;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        font-size: 110%;
+    }
+
+    .card-title {
+        font-size: 18px;
+    }
+
+    .card-text,
+    p,
+    td,
+    th,
+    a,
+    button {
+        font-size: 16px;
+    }
+
+    .btn-sm {
+        width: 100%;
+        font-size: 15px;
+    }
+
+    .table td,
+    .table th {
+        font-size: 15px;
+    }
+}
