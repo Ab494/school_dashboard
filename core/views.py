@@ -9,8 +9,11 @@ from django.http import JsonResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.models import User, Group
-from .forms import UnitForm
+from .forms import UnitForm, StudentForm
 from .models import Unit
+from django.db import IntegrityError
+
+# Dashboard 
 
 @login_required
 def dashboard(request):
@@ -31,28 +34,44 @@ def dashboard(request):
         'absent_count': absent_count,
         'recent_students': recent_students,
     })
+
+# Students list, logins required to view students details
 @login_required
 def students(request):
     students = Student.objects.all()
     return render(request, 'students.html', {'students': students})
 
+# Teachers views
 def teachers(request):
     teachers = Teacher.objects.all()
     return render(request, 'teachers.html', {'teachers': teachers})
 
+# Attendance views
 def attendance(request):
     attendance_records = Attendance.objects.all()
     return render(request, 'attendance.html', {'attendance_records': attendance_records})
+
+
 @login_required
-@permission_required('core.add_student', raise_exception=True) # For superusers with previleges to access
+@permission_required('core.add_student', raise_exception=True)
 def add_student(request):
     if request.method == 'POST':
-        name = request.POST['name']
-        class_level = request.POST['class_level']
-        admission_number = request.POST['admission_number']
-        Student.objects.create(name=name, class_level=class_level, admission_number=admission_number)
-        return redirect('students')
-    return render(request, 'add_student.html')
+        form = StudentForm(request.POST)
+        if form.is_valid():
+            try:
+                form.save()
+                messages.success(request, "Student added successfully.")
+                return redirect('students')
+            except IntegrityError:
+                form.add_error('admission_number', "A student with this admission number already exists.")
+        else:
+            messages.error(request, "Please correct the errors below.")
+    else:
+        form = StudentForm()
+
+    return render(request, 'add_student.html', {'form': form})
+
+
 @login_required
 @permission_required('core.add_teacher')
 def add_teacher(request):
@@ -64,6 +83,8 @@ def add_teacher(request):
         Teacher.objects.create(first_name=first_name, last_name=last_name, email=email, subject=subject)
         return redirect('teachers')
     return render(request, 'add_teacher.html')
+
+
 @login_required
 @permission_required('core.add_attendance')
 def add_attendance(request):
@@ -102,13 +123,14 @@ def attendance_list(request):
     attendance = Attendance.objects.all()
     
     return render(request, 'attendance.html', {'attendance': attendance})
-    
+
+ 
 def delete_student(request, pk):
     student = get_object_or_404(Student, pk=pk)
     student.delete()
     return redirect('students')
 
-
+# Views to delete teachers
 def delete_teacher(request, pk):
     teacher = get_object_or_404(Teacher, pk=pk)
     teacher.delete()
@@ -209,6 +231,8 @@ def unit_delete(request, unit_id):
     unit.delete()
     return redirect('unit_list')
 
+# Attendance summary to summaries the attendance of each student
+
 def attendance_summary(request):
     students = Student.objects.all()
     report_data = []
@@ -241,6 +265,8 @@ def attendance_summary(request):
         'total_absent': total_absent,
 
     })
+
+# class mission and vision
 def static_mission_vision(request):
     return render(request, 'mission_vision.html')
 
