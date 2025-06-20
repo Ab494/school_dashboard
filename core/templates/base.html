@@ -47,8 +47,10 @@
                     <a href="{% url 'add_student' %}" class="list-group-item list-group-item-action {% if request.path == '/add_student/' %}active{% endif %}">Add Student</a>
                     <a href="{% url 'teachers' %}" class="list-group-item list-group-item-action {% if request.path == '/teachers/' %}active{% endif %}">Teachers</a>
                     <a href="{% url 'unit' %}" class="list-group-item list-group-item-action {% if request.path == '/units/' %}active{% endif %}">Units</a>
+                    <a href="{% url 'add_unit' %}" class="list-group-item list-group-item-action {% if request.path == '/units/add/' %}active{% endif %}">Add Unit</a>
                     <a onclick="toggleMenu()" style="cursor: pointer;" class="list-group-item list-group-item-action">See More...</a>
                     <div id="extra-menu" class="collapse">
+                        
                         <a href="{% url 'change_password' %}" class="list-group-item list-group-item-action {% if request.path == '/change_password/' %}active{% endif %}">Change Password</a>
                         <a href="{% url 'add_teacher' %}" class="list-group-item list-group-item-action {% if request.path == '/add_teacher/' %}active{% endif %}">Add Teacher</a>
                         <a href="{% url 'attendance' %}" class="list-group-item list-group-item-action {% if request.path == '/attendance/' %}active{% endif %}">Attendance</a>
@@ -74,6 +76,7 @@
                         <a href="{% url 'add_student' %}" class="list-group-item list-group-item-action {% if request.path == '/add_student/' %}active{% endif %}">Add Student</a>
                         <a href="{% url 'teachers' %}" class="list-group-item list-group-item-action {% if request.path == '/teachers/' %}active{% endif %}">Teachers</a>
                         <a href="{% url 'unit' %}" class="list-group-item list-group-item-action {% if request.path == '/units/' %}active{% endif %}">Units</a>
+                        <a href="{% url 'add_unit' %}" class="list-group-item list-group-item-action {% if request.path == '/units/add/' %}active{% endif %}">Add Unit</a>
                         <a href="{% url 'change_password' %}" class="list-group-item list-group-item-action {% if request.path == '/change_password/' %}active{% endif %}">Change Password</a>
                         <a href="{% url 'add_teacher' %}" class="list-group-item list-group-item-action {% if request.path == '/add_teacher/' %}active{% endif %}">Add Teacher</a>
                         <a href="{% url 'attendance' %}" class="list-group-item list-group-item-action {% if request.path == '/attendance/' %}active{% endif %}">Attendance</a>

@@ -223,12 +223,14 @@ def delete_unit(request, pk):
 def unit_list(request):
     units =Unit.objects.all()
     return render(request, 'units/unit_list.html', {'units': units})
+
+# views to add units
 def unit_add(request):
     form = UnitForm(request.POST or None)
     if form.is_valid():
         form.save()
         return redirect('unit_list')
-    return render(request, 'units/unit_form.html', {'form': form})
+    return render(request, 'add_unit.html', {'form': form})
 
 def unit_edit(request, unit_id):
     unit = get_object_or_404(Unit, id=unit_id)

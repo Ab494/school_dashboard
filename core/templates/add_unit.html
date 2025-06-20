@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title%}Add Unit{% endblock %}
+{% block content %}
+<h2 class="mt-4 mt-3">Add Unit</h2>
+<form method="POST" class="p-3">
+  {% csrf_token %}
+  <div class="mb-3">
+    <label for="code" class="form-label">Code:</label>
+    <input type="text" id="code" name="code" class="form-control" maxlength="10" required>
+  </div>
+
+  <div class="mb-3">
+    <label for="name" class="form-label">Name:</label>
+    <input type="text" id="name" name="name" class="form-control" maxlength="100" required>
+  </div>
+
+  <div class="mb-3">
+    <label for="teacher" class="form-label">Teacher:</label>
+    <select id="teacher" name="teacher" class="form-select">
+      {% for user in teachers %}
+      <option value="{{ user.id }}">{{ user.username }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="mb-3">
+    <label for="semester" class="form-label">Semester:</label>
+    <input type="text" id="semester" name="semester" class="form-control" maxlength="20" required>
+  </div>
+
+  <button type="submit" class="btn btn-primary">Add Unit</button>
+</form>
+{% endblock %}
