@@ -9,9 +9,11 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
+import dj_database_url
 import os
 from pathlib import Path
 from unittest.mock import DEFAULT
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -82,10 +84,8 @@ WSGI_APPLICATION = 'school_dashboard.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': 
+    dj_database_url.parse('postgresql://school_db_0j7l_user:81kLBwSMkuGnRZekIgbddEFUQxPhO20s@dpg-d1an07nfte5s739rlu20-a.oregon-postgres.render.com/school_db_0j7l', conn_max_age=600)
 }
 
 
