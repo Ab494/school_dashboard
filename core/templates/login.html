@@ -2,35 +2,91 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Login</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Login</title>
+
+  <!-- Bootstrap & Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+  <!-- Minimal inline styles -->
+  <style>
+    /* Light mode defaults */
+    body           { background:#e8f0fe; transition:background 0.3s,color 0.3s; }
+    .login-card    { max-width:400px; width:100%; border-radius:12px; box-shadow:0 0 15px rgba(0,0,0,.1); }
+    .toggle-btn    { position:fixed; top:1rem; right:1rem; }
+
+    /* Dark-mode overrides */
+    body.dark      { background:#121212; color:#e0e0e0; }
+    body.dark .card{ background:#1e1e1e; color:#fff; box-shadow:0 0 15px rgba(0,0,0,.6); }
+    body.dark .form-control { background:#333; color:#fff; border:1px solid #555; }
+  </style>
 </head>
-<body class="bg-light">
-    <div class="container mt-5">
-        <div class="card col-md-4 offset-md-4">
-            <div class="card-body">
-                <h4 class="card-title mb-3 text-center">Class Admin Login</h4>
-                {% if error %}
-                    <div class="alert alert-danger">{{ error }}</div>
-                {% endif %}
-                <form method="POST">
-                    {% csrf_token %}
-                    <div class="mb-3">
-                        <label>Username</label>
-                        <input type="text" name="username" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label>Password</label>
-                        <input type="password" name="password" class="form-control" required>
-                    </div>
-                    <button class="btn btn-primary w-100" type="submit">Login</button>
-                </form>
-                <p class="text-center mt-3">
-                    <a href="{% url 'password_reset' %}">Forgot your password?</a>
-                </p>
-            </div>
+<body id="pageBody">
+
+  <!-- Dark-mode toggle button -->
+  <button class="btn btn-outline-dark btn-sm toggle-btn" id="dmToggle" aria-label="Toggle dark mode">
+      <i class="bi bi-moon-fill" id="dmIcon"></i>
+  </button>
+
+  <!-- Centered Login Card -->
+  <div class="container d-flex align-items-center justify-content-center vh-100">
+    <div class="card login-card p-4">
+      <h4 class="text-center mb-4">Class Admin Login</h4>
+
+      {% if error %}
+        <div class="alert alert-danger text-center">{{ error }}</div>
+      {% endif %}
+
+      <form method="POST" novalidate>
+        {% csrf_token %}
+        <div class="mb-3">
+          <label for="username" class="form-label">Username</label>
+          <input type="text" name="username" id="username" class="form-control" required>
         </div>
+
+        <div class="mb-3">
+          <label for="password" class="form-label">Password</label>
+          <input type="password" name="password" id="password" class="form-control" required>
+        </div>
+
+        <div class="form-check mb-3 text-start">
+          <input class="form-check-input" type="checkbox" name="remember_me" id="remember_me">
+          <label class="form-check-label" for="remember_me">Remember me</label>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">Login</button>
+      </form>
+
+      <p class="text-center mt-3">
+        <a href="{% url 'password_reset' %}">Forgot your password?</a>
+      </p>
     </div>
+  </div>
+
+  <!-- Bootstrap bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Dark-mode persistence -->
+  <script>
+    const body   = document.getElementById('pageBody');
+    const btn    = document.getElementById('dmToggle');
+    const icon   = document.getElementById('dmIcon');
+
+    // Load saved preference
+    if (localStorage.getItem('prefers-dark') === 'true') {
+      body.classList.add('dark');
+      icon.classList.replace('bi-moon-fill', 'bi-sun-fill');
+    }
+
+    btn.addEventListener('click', () => {
+      body.classList.toggle('dark');
+      const dark   = body.classList.contains('dark');
+      icon.classList.toggle('bi-moon-fill', !dark);
+      icon.classList.toggle('bi-sun-fill',  dark);
+      localStorage.setItem('prefers-dark', dark);
+    });
+  </script>
 </body>
 </html>

@@ -149,17 +149,29 @@ def get_counts(request):
     }
     return JsonResponse(data)
 
+
 def login_view(request):
+    error = None
+
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
+        remember = request.POST.get('remember_me')
+
         user = authenticate(request, username=username, password=password)
-        if user:
+        if user is not None:
             login(request, user)
+
+            if not remember:
+                request.session.set_expiry(0)  # Expires on browser close
+            else:
+                request.session.set_expiry(1209600)  # 2 weeks
+
             return redirect('dashboard')
         else:
-            messages.error(request, "Invalid username or password")
-    return render(request, 'login.html')
+            error = 'Invalid username or password'
+
+    return render(request, 'login.html', {'error': error})
 
 def logout_view(request):
     logout(request)
