@@ -1,3 +1,4 @@
+
 {% extends 'base.html' %}
 {% block title %}Students{% endblock %}
 {% block content %}
@@ -23,7 +24,11 @@
         <tr>
             <td>{{ forloop.counter }}</td>
             <td>
-                <img src="https://i.imgur.com/GYW2kv5.jpeg" alt="Student Photo" witdh="50" height="50">
+                {% if student.photo_url %}
+                    <img src="{{ student.photo_url }}" alt="Student Photo" width="50" height="50" style="border-radius: 50%; object-fit: cover;">
+                {% else %}
+                    <img src="https://www.gravatar.com/avatar/?d=mp" alt="Default Photo" width="50" height="50" style="border-radius: 50%; object-fit: cover;">
+                {% endif %}
             </td>
             <td>{{ student.name }}</td>
             <td>{{ student.class_level }}</td>
@@ -33,25 +38,23 @@
             </td>
         </tr>
         {% empty %}
-        <tr><td colspan="4">No students found.</td></tr>
+        <tr><td colspan="6">No students found.</td></tr>
         {% endfor %}
     </tbody>
 </table>
 
 <div class="d-flex justify-content-between align-items-center">
-    <span>Page {{ page_obj.number }} of {{  page_obj.paginator.num_pages}}</span>
+    <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
     <div>
         {% if page_obj.has_previous %}
-        <a href="?page=1{% if request.GET.q %}&q={{ request.GET.q}}{% endif %}" class="btn btn-sm btn-secondary">First</a>
-        <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q}}{% endif %}" class="btn btn-sm btn-secondary">Previous</a>
+        <a href="?page=1{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="btn btn-sm btn-secondary">First</a>
+        <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="btn btn-sm btn-secondary">Previous</a>
         {% endif %}
         {% if page_obj.has_next %}
-        <a href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q}}{% endif %}" class="btn btn-sm btn-secondary">Next</a>
-        <a href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.q %}&q={{ request.GET.q}}{% endif %}" class="btn btn-sm btn-secondary">Last</a>
+        <a href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="btn btn-sm btn-secondary">Next</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="btn btn-sm btn-secondary">Last</a>
         {% endif %}
-    </div>
 </div>
-
-
+</div>
 
 {% endblock %}
