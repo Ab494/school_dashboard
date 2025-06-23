@@ -21,6 +21,6 @@ class TeacherAdmin(admin.ModelAdmin):
 
     # Tell Django how to sort the synthetic "full_name" column
     def full_name(self, obj):
-        return obj.full_name
+        return obj.full_name()
     full_name.admin_order_field = "first_name" # sort by first_name
     full_name.short_description = 'Name'
