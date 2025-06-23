@@ -1,15 +1,19 @@
-
-{% extends 'base.html' %}
-
+{% extends "base.html" %}
 {% block title %}Add Unit{% endblock %}
-
 {% block content %}
-  <div class="mt-4 mt-3 container">
-    <h2 class="mb-4">Add Unit</h2>
-    <form method="POST" class="p-3">
-      {% csrf_token %}
-      {{ form.as_p }}
-      <button type="submit" class="btn btn-primary">Add Unit</button>
-    </form>
-  </div>
+<div class="container mt-4" style="max-width: 500px;">
+  <h3 class="mb-3">Add Unit</h3>
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-success">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+
+  <form method="post" novalidate>
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Add Unit</button>
+  </form>
+</div>
 {% endblock %}

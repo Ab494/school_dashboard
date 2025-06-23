@@ -19,8 +19,10 @@ class Teacher(models.Model):
     last_name = models.CharField(max_length=50, default='Default')
     subject = models.CharField(max_length=50)
     email = models.EmailField(null=True, blank=True)
-    def __str__(self):
+    def full_name(self):
         return f"{self.first_name} {self.last_name}"
+    def __str__(self):
+        return f"{self.full_name()} - {self.subject}"
     
 STATUS_CHOICES = [
     ('Present', 'Present'),
@@ -40,7 +42,7 @@ class Attendance(models.Model):
 class Unit(models.Model):
     code = models.CharField(max_length=10, unique=True)
     name = models.CharField(max_length=100)
-    teacher = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, limit_choices_to={'groups__name': 'Teachers'})
+    teacher = models.ForeignKey(Teacher, on_delete=models.SET_NULL, null=True, blank=True)
     semester = models.CharField(max_length=20)
     def __str__(self):
         return f"{self.code} - {self.name}"

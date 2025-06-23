@@ -225,11 +225,18 @@ def unit_list(request):
     return render(request, 'units/unit_list.html', {'units': units})
 
 # views to add units
+
+@login_required
+@permission_required("core.add_unit", raise_exception=True)
 def unit_add(request):
-    form = UnitForm(request.POST or None)
-    if form.is_valid():
-        form.save()
-        return redirect('unit_list')
+    if request.method == 'POST':
+        form = UnitForm(request.POST or None)
+        if form.is_valid():
+           form.save()
+           messages.success(request, "Unit added successfully.")
+           return redirect('unit_list')
+    else:
+        form = UnitForm()
     return render(request, 'add_unit.html', {'form': form})
 
 def unit_edit(request, unit_id):

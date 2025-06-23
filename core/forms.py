@@ -9,6 +9,22 @@ class UnitForm(forms.ModelForm):
         model = Unit
         fields = ['code', 'name', 'semester', 'teacher']
 
+        widgets = {
+            "code": forms.TextInput(attrs={"placeholder": "e.g. DRF201"}),
+            "name": forms.TextInput(attrs={"placeholder": "e.g. Install Computer Software"}),
+            "semester": forms.TextInput(attrs={"placeholder": "e.g. 1st Semester"}),
+            "teacher": forms.Select()
+            
+        }
+
+        def clean_code(self):
+            code = self.clean_data["code"].strip().upper()
+            if Unit.objects.filter(code=code).exists():
+                raise forms.ValidationError("A unit with this code alreaddy exists. ")
+            return code
+                
+            
+
 # Update StudentForm to check for duplicates
 class StudentForm(forms.ModelForm):
     class Meta:

@@ -54,7 +54,7 @@
         <a href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="btn btn-sm btn-secondary">Next</a>
         <a href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="btn btn-sm btn-secondary">Last</a>
         {% endif %}
-</div>
+    </div>
 </div>
 
 {% endblock %}
