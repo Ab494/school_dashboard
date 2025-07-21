@@ -13,6 +13,8 @@ import dj_database_url
 import os
 from pathlib import Path
 from unittest.mock import DEFAULT
+from dotenv import load_dotenv
+load_dotenv()
 
 
 
@@ -42,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'core',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [
@@ -86,7 +89,7 @@ WSGI_APPLICATION = 'school_dashboard.wsgi.application'
 
 DATABASES = {
     'default': 
-    dj_database_url.parse('postgresql://school_db_0j7l_user:81kLBwSMkuGnRZekIgbddEFUQxPhO20s@dpg-d1an07nfte5s739rlu20-a.oregon-postgres.render.com/school_db_0j7l', conn_max_age=600)
+    dj_database_url.config(default=os.getenv('DATABASE_URL'), conn_max_age=600, ssl_require=True)
 }
 
 

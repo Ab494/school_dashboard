@@ -75,6 +75,12 @@ def add_student(request):
 @login_required
 @permission_required('core.add_teacher')
 def add_teacher(request):
+    """
+    Handle the creation of a new teacher.
+    Only users with the 'add_teacher' permission can access this view.
+    On POST: creates a new Teacher from form data and redirects to the teachers list.
+    On GET: renders the add_teacher form.
+    """
     if request.method == 'POST':
         first_name = request.POST['first_name']
         last_name = request.POST['last_name']
