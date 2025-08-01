@@ -7,6 +7,7 @@ from django.conf.urls.static import static
 from api.views import StudentViewSet
 from rest_framework.routers import DefaultRouter
 
+
 # Create a router and register our viewset with it.
 router = DefaultRouter()
 router.register(r'students', StudentViewSet, basename='student')
@@ -20,3 +21,4 @@ urlpatterns = [
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
