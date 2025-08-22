@@ -1,31 +1,109 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}Attendance{% endblock %}
 {% block content %}
 
-<h2 class="mt-4 mt-3">Attendance records</h2>
-<table class="table table-bordered">
-    <thead class="table-dark">
+<h2 class="mt-4 mb-3">Attendance Dashboard</h2>
+
+<!-- Nav tabs -->
+<ul class="nav nav-tabs" id="attendanceTab" role="tablist">
+  <li class="nav-item" role="presentation">
+    <button class="nav-link active" id="records-tab" data-bs-toggle="tab" data-bs-target="#records" type="button" role="tab" aria-controls="records" aria-selected="true">Attendance Records</button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="summary-tab" data-bs-toggle="tab" data-bs-target="#summary" type="button" role="tab" aria-controls="summary" aria-selected="false">Attendance Summary</button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="mark-tab" data-bs-toggle="tab" data-bs-target="#mark" type="button" role="tab" aria-controls="mark" aria-selected="false">Mark Attendance</button>
+  </li>
+</ul>
+
+<!-- Tab panes -->
+<div class="tab-content mt-3" id="attendanceTabContent">
+  
+  <!-- Attendance Records Tab -->
+  <div class="tab-pane fade show active" id="records" role="tabpanel" aria-labelledby="records-tab">
+    <table class="table table-bordered">
+      <thead class="table-dark">
         <tr>
-            <th>#</th>
-            <th>Student</th>
-            <th>Date</th>
-            <th>Status</th>
+          <th>#</th>
+          <th>Student</th>
+          <th>Date</th>
+          <th>Status</th>
         </tr>
-    </thead>
-    <tbody>
+      </thead>
+      <tbody>
         {% for record in attendance_records %}
         <tr>
-            <td>{{ forloop.counter }}</td>
-            <td>{{ record.student.name }}</td>
-            <td>{{ record.date }}</td>
-            <td>{{ record.status}}</td>
+          <td>{{ forloop.counter }}</td>
+          <td>{{ record.student.name }}</td>
+          <td>{{ record.date }}</td>
+          <td>{{ record.status }}</td>
         </tr>
         {% empty %}
         <tr>
-            <td colspan="4">No attendance records found.</td>
+          <td colspan="4">No attendance records found.</td>
         </tr>
-        
         {% endfor %}
-    </tbody>
-</table>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Attendance Summary Tab -->
+  <div class="tab-pane fade" id="summary" role="tabpanel" aria-labelledby="summary-tab">
+    <table class="table table-bordered table-striped w-75 mx-auto">
+      <thead class="table-primary">
+        <tr>
+          <th>Student</th>
+          <th>Days Present</th>
+          <th>Days Absent</th>
+          <th>Attendance&nbsp;%</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for data in report_data %}
+        <tr>
+          <td>{{ data.student }}</td>
+          <td>{{ data.present }}</td>
+          <td>{{ data.absent }}</td>
+          <td>{{ data.percentage }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="4" class="text-center">No attendance records yet.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <!-- Mark Attendance Tab -->
+  <div class="tab-pane fade" id="mark" role="tabpanel" aria-labelledby="mark-tab">
+    <h3 class="mt-4">Mark Attendance</h3>
+
+    <form method="POST" action="{% url 'add_attendance' %}">
+      {% csrf_token %}
+    
+      <div class="mb-3">
+        <label for="{{ form.student.id_for_label }}">Student</label>
+        {{ form.student }}
+        {% if form.student.errors %}
+           <div class="text-danger">{{ form.student.errors }}</div>
+        {% endif %}
+      </div>
+
+      <div class="mb-3">
+        <label for="{{ form.status.id_for_label }}">Status</label>
+        {{ form.status }}
+        {% if form.status.errors %}
+          <div class="text-danger">{{ form.status.errors }}</div>
+        {% endif %}
+      </div>
+
+      <button type="submit" class="btn btn-success">Mark</button>
+    </form>
+  </div>
+
+  
+</div>
+
 {% endblock %}

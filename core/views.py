@@ -9,9 +9,11 @@ from django.http import JsonResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.models import User, Group
-from .forms import UnitForm, StudentForm
+from .forms import UnitForm, StudentForm, TeacherForm
 from .models import Unit
 from django.db import IntegrityError
+from django.utils import timezone
+from .forms import AttendanceForm
 
 # Dashboard 
 
@@ -26,7 +28,7 @@ def dashboard(request):
     
 
     return render(request, 'dashboard.html', {
-        'school_name': "Eldoret Poly CICT Group B",
+        'school_name': "Eldoret Poly ICT Group B",
         'total_students': total_students,
         'total_teachers': total_teachers,
         'total_attendance': total_attendance,
@@ -75,33 +77,33 @@ def add_student(request):
 @login_required
 @permission_required('core.add_teacher')
 def add_teacher(request):
-    """
-    Handle the creation of a new teacher.
-    Only users with the 'add_teacher' permission can access this view.
-    On POST: creates a new Teacher from form data and redirects to the teachers list.
-    On GET: renders the add_teacher form.
-    """
     if request.method == 'POST':
-        first_name = request.POST['first_name']
-        last_name = request.POST['last_name']
-        subject = request.POST['subject']
-        email = request.POST['email']
-        Teacher.objects.create(first_name=first_name, last_name=last_name, email=email, subject=subject)
-        return redirect('teachers')
-    return render(request, 'add_teacher.html')
+        form = TeacherForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('teachers')
+    else:
+        form = TeacherForm()
+    return render(request, 'add_teacher.html', {'form': form})
+
 
 
 @login_required
 @permission_required('core.add_attendance')
 def add_attendance(request):
-    students = Student.objects.all()
     if request.method == 'POST':
-        student_id = request.POST['student']
-        status = request.POST['status']
-        Attendance.objects.create(student_id=student_id, date=timezone.now().date(), status=status)
-        return redirect('attendance')
-    return render(request, 'add_attendance.html', {'students': students})
+        form = AttendanceForm(request.POST)
+        if form.is_valid():
+            attendance = form.save(commit=False)
+            attendance.date = timezone.now().date()   # override date if needed
+            attendance.save()
+            return redirect('attendance')  # redirect after saving
+    else:
+        form = AttendanceForm()
 
+    return render(request, 'add_attendance.html', {'form': form})
+
+# Views for student list
 def student_list(request):
     query = request.GET.get('q')
     students = Student.objects.all()

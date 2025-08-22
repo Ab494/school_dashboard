@@ -29,9 +29,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-m6@1l7&lbo)uo%f(y)*4r_spt42iwe6m$)do0zr3rqbs=5@cf2'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG =  os.environ.get("DEBUG", "False") == True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS =  os.environ.get("ALLOWED_HOSTS", "*").split(",")
 
 
 # Application definition
@@ -44,7 +44,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'core',
-    'rest_framework'
+    'rest_framework',
+    'widget_tweaks',
+    
 ]
 
 MIDDLEWARE = [
@@ -136,7 +138,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # School name
-SCHOOL_NAME = "Eldoret National Poly CICT Group B"
+SCHOOL_NAME = "Eldoret National Poly ICT Group B"
 
 # Login
 LOGIN_URL = '/login/'

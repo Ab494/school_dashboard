@@ -2,7 +2,7 @@
 {% block title%}Add Attendance{% endblock %}
 {% block content %}
 <h2 class="mt-4 mt-3">Mark Attendance</h2>
-<form method="POST">
+<form method="POST" action="{% url 'add_attendance' %}">
     {% csrf_token %}
     <div class="mb-3">
         <label>Student</label>

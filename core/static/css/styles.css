@@ -249,3 +249,24 @@ body {
         font-size: 15px;
     }
 }
+
+.form-control {
+    border-radius: 0.25rem;
+    box-shadow: none;
+    border: 1px solid #ced4da;
+    color: #666666;
+}
+
+.form-control:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(128, 189, 255, 0.25);
+}
+.form-control::placeholder {
+    color: #999999;
+}
+.status-badge {
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    color: #fff;
+}

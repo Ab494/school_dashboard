@@ -1,28 +1,41 @@
-{% extends "base.html" %}
-{% block title%}Add Teacher{% endblock %}
-{% block content %}
-<h2 class="mt-4 mt-3">Add Teacher</h2>
-<form method="POST">
-    {% csrf_token %}
-    <div class="mb-3">
-        <label>First Name</label>
-        <input type="text" name="first_name" placeholder="First Name" class="form-control" required>
-    </div>
-    <div class="mb-3">
-        <label>Last Name</label>
-        <input type="text" name="last_name" placeholder="Last Name" class="form-control" required>
+{% extends 'base.html' %}
 
+{% load form_tags %}
+{% block title %}Add Teacher{% endblock %}
+{% block content %}
+<div class="container mt-3">
+  <h2 class="mb-4">Add Teacher</h2>
+
+  {% if form.errors %}
+    <div class="alert alert-danger">
+      {{ form.errors.as_ul }}
     </div>
-    <div class="mb-3">
-        <label>Subject</lebel>
-        <input type="text" name="subject" class="form-control" required>
-    </div>
-    <div class="mb-3">
-        <label>Email</lebel>
-        <input type="text" name="email" class="form-control" required>
-    </div>
-    <button type="submit" class="btn btn-success">Add</button>
+  {% endif %}
+
+  <form method="POST" class="p-4 border rounded bg-light shadow-sm">
+    {% csrf_token %}
     
-</form>
+    <div class="mb-3">
+      <label class="form-label">First Name</label>
+      {{ form.first_name|add_class:"form-control w-50" }}
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Last Name</label>
+      {{ form.last_name|add_class:"form-control w-50" }}
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Subject</label>
+      {{ form.subject|add_class:"form-control w-50" }}
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Email</label>
+      {{ form.email|add_class:"form-control w-50" }}
+    </div>
+
+    <button type="submit" class="btn btn-primary">Add</button>
+  </form>
+</div>
 {% endblock %}
-            

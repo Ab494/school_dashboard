@@ -1,20 +1,52 @@
 {% extends 'base.html' %}
-{% block title%}Add Student{% endblock %}
+{% load widget_tweaks %}
+
+{% block title %}Add Student{% endblock %}
+
 {% block content %}
 <div class="container mt-4">
-    <h2 class="mb-3">Add Student</h2>
+  <h2 class="mb-4">Add Student</h2>
 
-    {% if form.errors %}
+  {% if form.errors %}
     <div class="alert alert-danger">
-        {{ form.errors.as_ul }}
+      {{ form.errors.as_ul }}
     </div>
-    {% endif %}
+  {% endif %}
 
-    <form method="POST">
-        {% csrf_token %}
-        {{ form.as_p}}
-        <button type="submit" class="btn btn-success">Add</button>
-    </form>
-    
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label class="form-label">Name</label>
+        {{ form.name|add_class:"form-control" }}
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <label class="form-label">Class Level</label>
+        {{ form.class_level|add_class:"form-control" }}
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <label class="form-label">Admission Number</label>
+        {{ form.admission_number|add_class:"form-control" }}
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <label class="form-label">Email</label>
+        {{ form.email|add_class:"form-control" }}
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <label class="form-label">Date Added</label>
+        {{ form.date_added|add_class:"form-control" }}
+      </div>
+      <div class="col-md-6 mb-3">
+        <label class="form-label">Photo</label>
+        {{ form.photo|add_class:"form-control" }}
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-success">Add</button>
+  </form>
 </div>
 {% endblock %}

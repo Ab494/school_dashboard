@@ -1,11 +1,44 @@
+# Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
+*$py.class
+
+# Logs
 *.log
 
+# Environment variables
 .env
+
+# Virtual environments
 venv/
 env/
+
+# Static and media
 staticfiles/
 media/
-.Ds_store
+
+# macOS
+.DS_Store
+
+# VS Code
 .vscode/
+
+# SQLite database (if used in dev)
+*.sqlite3
+
+# pytest cache
+.pytest_cache/
+
+# Migrations cache
+*.pyc
+
+# Coverage reports
+htmlcov/
+*.cover
+*.coverage
+
+# JetBrains IDEs
+.idea/
+
+# Python egg metadata
+*.egg-info/
