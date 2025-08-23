@@ -33,8 +33,10 @@ SECRET_KEY = config("SECRET_KEY")
 DEBUG =  os.environ.get("DEBUG", "False") == True
 
 ALLOWED_HOSTS =  os.environ.get("ALLOWED_HOSTS", "").split(",")
+# or config("ALLOWED_HOSTS", default="").split(",")
  # CSRF trusted origins
 CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS", "").split(",")
+
 
 # Application definition
 
