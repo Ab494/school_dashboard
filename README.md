@@ -2,10 +2,6 @@
 
 A web-based school management system for Eldoret National Polytechnic CICT Group B, built with Django.
 
-## 🖼️ Live Demo
-
-🌐 [Visit the Live App](https://school-dashboard-lqng.onrender.com)
-
 ## Features
 
 - Student registration & management
