@@ -1,0 +1,29 @@
+[flake8]
+# Exclude auto-generated and third-party files
+exclude =
+    venv,
+    env,
+    .venv,
+    migrations,
+    staticfiles,
+    __pycache__
+
+# Line length
+max-line-length = 120
+
+# Ignore rules
+ignore =
+    # Whitespace and blank line style — existing code
+    W291,W293,W391,W292,
+    # Blank line rules
+    E302,E303,E301,
+    # Indentation
+    E111,E114,E116,
+    # Continuation lines
+    E121,E123,E126,E128,
+    # Whitespace around operator
+    E225,E203,
+    # Multiple spaces
+    E271,E222,
+    # Long lines (handled by max-line-length)
+    E501,W503

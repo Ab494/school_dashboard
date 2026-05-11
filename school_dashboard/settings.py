@@ -14,7 +14,6 @@ from decouple import config
 import environ
 import os
 from pathlib import Path
-from unittest.mock import DEFAULT
 from dotenv import load_dotenv
 load_dotenv()
 
