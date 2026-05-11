@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+venv/
+env/
+.venv/
+
+# Environment
+.env
+.env.*
+
+# Database
+*.sqlite3
+
+# Static and media (generated)
+staticfiles/
+media/
+
+# Git
+.git/
+.gitignore
+
+# Docs
+README.md
+
+# Terraform
+terraform/
+
+# Logs
+*.log
+logs/
