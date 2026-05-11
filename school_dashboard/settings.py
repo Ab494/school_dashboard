@@ -160,5 +160,3 @@ EMAIL_BACKEND = 'django.core.email.backends.console.EmailBackend'
 DEFAULT_FROM_EMAIL = 'admin@colloge.edu'
 
 # Print settings for debugging
-print("ALLOWED_HOSTS:", ALLOWED_HOSTS)
-print("CSRF_TRUSTED_ORIGINS:", CSRF_TRUSTED_ORIGINS)

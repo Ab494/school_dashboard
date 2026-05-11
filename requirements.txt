@@ -15,3 +15,4 @@ typing_extensions==4.14.0
 tzdata==2025.2
 whitenoise==6.9.0
 django-environ
+Pillow==10.3.0

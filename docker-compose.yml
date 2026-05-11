@@ -1,0 +1,49 @@
+# docker-compose.yml — local development environment
+# Usage: docker compose up --build
+
+services:
+
+  # ── PostgreSQL Database ───────────────────────────
+  db:
+    image: postgres:15-alpine
+    container_name: school_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: school_dashboard
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Django App ────────────────────────────────────
+  web:
+    build: .
+    container_name: school_web
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DEBUG: "True"
+      SECRET_KEY: dev-secret-key-not-for-production
+      DATABASE_URL: postgres://postgres:postgres@db:5432/school_dashboard
+      ALLOWED_HOSTS: localhost,127.0.0.1,0.0.0.0
+      CSRF_TRUSTED_ORIGINS: http://localhost:8000,http://127.0.0.1:8000
+    ports:
+      - "8000:8000"
+    volumes:
+      - media_data:/app/media
+    command: >
+      sh -c "python manage.py migrate &&
+             gunicorn school_dashboard.wsgi:application --bind 0.0.0.0:8000 --workers 2"
+
+volumes:
+  postgres_data:
+  media_data:
