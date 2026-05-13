@@ -118,7 +118,15 @@ jobs:
           DATABASE_URL: postgres://postgres:postgres@localhost:5432/school_build
           ALLOWED_HOSTS: localhost,127.0.0.1
 
-      - name: Check migrations are up to date
+      - name: Run migrations
+        run: python manage.py migrate
+        env:
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          DEBUG: "False"
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/school_build
+          ALLOWED_HOSTS: localhost,127.0.0.1
+
+      - name: Check no pending migrations
         run: python manage.py migrate --check
         env:
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
