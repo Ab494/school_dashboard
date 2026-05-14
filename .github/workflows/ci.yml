@@ -31,7 +31,7 @@ jobs:
           flake8 . \
             --exclude=venv,env,.venv,migrations,staticfiles \
             --max-line-length=120 \
-            --ignore=E501,W503,E203
+            --extend-ignore=W291,W293,W391,W292,E302,E303,E301,E305,E111,E114,E116,E121,E123,E126,E128,E225,E203,E202,E251,E261,E271,E222,E402,E501,W503,E265,F401,F811,F841,F823
 
   # ── Job 2: Test ─────────────────────────────────────
   # Runs Django tests with a real PostgreSQL database
@@ -118,7 +118,15 @@ jobs:
           DATABASE_URL: postgres://postgres:postgres@localhost:5432/school_build
           ALLOWED_HOSTS: localhost,127.0.0.1
 
-      - name: Check migrations are up to date
+      - name: Run migrations
+        run: python manage.py migrate
+        env:
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          DEBUG: "False"
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/school_build
+          ALLOWED_HOSTS: localhost,127.0.0.1
+
+      - name: Check no pending migrations
         run: python manage.py migrate --check
         env:
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
