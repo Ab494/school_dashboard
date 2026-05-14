@@ -6,6 +6,7 @@ from django.utils import timezone
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import permission_required, login_required, user_passes_test
 from django.http import JsonResponse
+from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.models import User, Group
@@ -316,3 +317,43 @@ def static_mission_vision(request):
 
 
 
+
+
+# ── Health Check ──────────────────────────────────────
+# Used by Render and UptimeRobot to verify the app is running
+import time
+from django.http import JsonResponse
+from django.conf import settings
+from django.db import connection
+
+
+def health_check(request):
+    start = time.time()
+
+    # Check database
+    db_status = 'healthy'
+    db_response_time = None
+    try:
+        db_start = time.time()
+        connection.ensure_connection()
+        db_response_time = round((time.time() - db_start) * 1000, 2)
+    except Exception:
+        db_status = 'unhealthy'
+
+    response_time = round((time.time() - start) * 1000, 2)
+
+    data = {
+        'status': 'healthy' if db_status == 'healthy' else 'degraded',
+        'timestamp': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
+        'environment': settings.DEBUG and 'development' or 'production',
+        'services': {
+            'database': {
+                'status': db_status,
+                'response_time_ms': db_response_time,
+            }
+        },
+        'response_time_ms': response_time,
+    }
+
+    status_code = 200 if db_status == 'healthy' else 503
+    return JsonResponse(data, status=status_code)
