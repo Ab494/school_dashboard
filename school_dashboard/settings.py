@@ -160,3 +160,88 @@ EMAIL_BACKEND = 'django.core.email.backends.console.EmailBackend'
 DEFAULT_FROM_EMAIL = 'admin@colloge.edu'
 
 # Print settings for debugging
+
+
+# ── Logging Configuration ─────────────────────────────
+# Django uses Python's built-in logging module
+# This config logs to console (always) and files (in production)
+import logging
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+
+    # ── Formatters ──────────────────────────────────────
+    # How log messages look
+    'formatters': {
+        # Human readable — used in development
+        'verbose': {
+            'format': '[{asctime}] {levelname} {name} {message}',
+            'style': '{',
+        },
+        # JSON-style — easier to parse in production
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+
+    # ── Handlers ─────────────────────────────────────────
+    # Where to send log messages
+    'handlers': {
+        # Always log to console — Render captures this
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+        # Log errors to a file
+        'error_file': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': BASE_DIR / 'logs' / 'error.log',
+            'maxBytes': 1024 * 1024 * 10,  # 10MB
+            'backupCount': 5,
+            'level': 'ERROR',
+            'formatter': 'verbose',
+        },
+        # Log all requests to a file
+        'django_file': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': BASE_DIR / 'logs' / 'django.log',
+            'maxBytes': 1024 * 1024 * 10,  # 10MB
+            'backupCount': 5,
+            'formatter': 'verbose',
+        },
+    },
+
+    # ── Loggers ──────────────────────────────────────────
+    # Which loggers to configure
+    'loggers': {
+        # Django's internal logger
+        'django': {
+            'handlers': ['console', 'django_file'],
+            'level': env('LOG_LEVEL', default='INFO'),
+            'propagate': True,
+        },
+        # Django request logger — logs all HTTP requests
+        'django.request': {
+            'handlers': ['console', 'error_file'],
+            'level': 'WARNING',
+            'propagate': False,
+        },
+        # Our app logger
+        'core': {
+            'handlers': ['console', 'django_file'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+    },
+}
+
+
+# ── Override logging handlers based on environment ────
+# In Docker build (collectstatic), logs dir may not exist
+# Only use file handlers if logs directory exists
+import os
+_logs_dir = BASE_DIR / 'logs'
+if not os.path.exists(_logs_dir):
+    os.makedirs(_logs_dir, exist_ok=True)
