@@ -1,60 +1,99 @@
-
 {% extends 'base.html' %}
 {% block title %}Students{% endblock %}
 {% block content %}
 
-<h2 class="mt-4 mt-3">Student List</h2>
-<form method="get" class="mb-3 d-flex" role="search">
-    <input type="text" name="q" class="form-control me-2" placeholder="search..." value="{{ request.GET.q }}">
-    <button type="submit" class="btn btn-outline-primary">Search</button>
-</form>
-<table class="table table-bordered">
-    <thead class="table-dark">
-        <tr>
-            <th>#</th>
-            <th>Photo</th>
-            <th>Name</th>
-            <th>Class</th>
-            <th>Admission Number</th>
-            <th>Action</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for student in students %}
-        <tr>
-            <td>{{ forloop.counter }}</td>
-            <td>
-                {% if student.photo_url %}
-                    <img src="{{ student.photo_url }}" alt="Student Photo" width="50" height="50" style="border-radius: 50%; object-fit: cover;">
-                {% else %}
-                    <img src="https://www.gravatar.com/avatar/?d=mp" alt="Default Photo" width="50" height="50" style="border-radius: 50%; object-fit: cover;">
-                {% endif %}
-            </td>
-            <td>{{ student.name }}</td>
-            <td>{{ student.class_level }}</td>
-            <td>{{ student.admission_number }}</td>
-            <td>
-                <a href="{% url 'delete_student' student.id %}" class="btn btn-danger btn-sm">Delete</a>
-            </td>
-        </tr>
-        {% empty %}
-        <tr><td colspan="6">No students found.</td></tr>
-        {% endfor %}
-    </tbody>
-</table>
-
-<div class="d-flex justify-content-between align-items-center">
-    <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+<div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        {% if page_obj.has_previous %}
-        <a href="?page=1{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="btn btn-sm btn-secondary">First</a>
-        <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="btn btn-sm btn-secondary">Previous</a>
-        {% endif %}
-        {% if page_obj.has_next %}
-        <a href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="btn btn-sm btn-secondary">Next</a>
-        <a href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="btn btn-sm btn-secondary">Last</a>
-        {% endif %}
+        <h4 class="mb-0 fw-bold"><i class="bi bi-people me-2 text-primary"></i>Student List</h4>
+        <small class="text-muted">{{ page_obj.paginator.count }} total students</small>
+    </div>
+    <a href="{% url 'add_student' %}" class="btn btn-primary">
+        <i class="bi bi-person-plus me-1"></i> Add Student
+    </a>
+</div>
+
+<!-- Search -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" class="d-flex gap-2" role="search">
+            <input type="text" name="q" class="form-control" placeholder="Search by name or admission number..." value="{{ request.GET.q }}">
+            <button type="submit" class="btn btn-primary px-4">
+                <i class="bi bi-search"></i>
+            </button>
+            {% if request.GET.q %}
+            <a href="{% url 'students' %}" class="btn btn-outline-secondary">Clear</a>
+            {% endif %}
+        </form>
     </div>
 </div>
 
+<!-- Table -->
+<div class="card">
+    <div class="card-body p-0">
+        <table class="table mb-0">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Photo</th>
+                    <th>Name</th>
+                    <th>Class</th>
+                    <th>Admission No.</th>
+                    <th>Date Added</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in students %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>
+                        {% if student.photo_url %}
+                        <img src="{{ student.photo_url }}" alt="Photo" width="40" height="40" style="border-radius:50%;object-fit:cover;border:2px solid #e0e0e0;">
+                        {% else %}
+                        <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#1a237e,#42a5f5);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:1rem;">
+                            {{ student.name|first|upper }}
+                        </div>
+                        {% endif %}
+                    </td>
+                    <td class="fw-semibold">{{ student.name }}</td>
+                    <td><span class="badge bg-primary bg-opacity-10 text-primary">{{ student.class_level }}</span></td>
+                    <td><code>{{ student.admission_number }}</code></td>
+                    <td class="text-muted small">{{ student.date_added|date:"M d, Y" }}</td>
+                    <td>
+                        <a href="{% url 'delete_student' student.id %}" class="btn btn-sm btn-outline-danger"
+                           onclick="return confirm('Delete {{ student.name }}?')">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center py-5 text-muted">
+                        <i class="bi bi-people display-4 d-block mb-2"></i>
+                        No students found.
+                        <a href="{% url 'add_student' %}" class="d-block mt-2">Add the first student</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    {% if page_obj.paginator.num_pages > 1 %}
+    <div class="card-footer d-flex justify-content-between align-items-center">
+        <small class="text-muted">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</small>
+        <div class="d-flex gap-1">
+            {% if page_obj.has_previous %}
+            <a href="?page=1{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-chevron-double-left"></i></a>
+            <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-chevron-left"></i></a>
+            {% endif %}
+            {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-chevron-right"></i></a>
+            <a href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-chevron-double-right"></i></a>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+</div>
 {% endblock %}
