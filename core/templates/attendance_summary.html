@@ -7,6 +7,9 @@
         <h4 class="mb-0 fw-bold"><i class="bi bi-bar-chart me-2 text-primary"></i>Attendance Summary Report</h4>
         <small class="text-muted">Overall attendance statistics for all students</small>
     </div>
+    <a href="{% url 'export_attendance_pdf' %}" class="btn btn-success me-2">
+        <i class="bi bi-file-pdf me-1"></i> Export PDF
+    </a>
     <a href="{% url 'add_attendance' %}" class="btn btn-primary">
         <i class="bi bi-calendar-plus me-1"></i> Mark Attendance
     </a>
