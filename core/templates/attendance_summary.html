@@ -12,6 +12,28 @@
     </a>
 </div>
 
+<!-- Summary Cards -->
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card text-center p-3">
+            <div class="fw-bold fs-1 text-success">{{ total_present }}</div>
+            <div class="text-muted">Total Present</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center p-3">
+            <div class="fw-bold fs-1 text-danger">{{ total_absent }}</div>
+            <div class="text-muted">Total Absent</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center p-3">
+            <div class="fw-bold fs-1 text-primary">{{ report_data|length }}</div>
+            <div class="text-muted">Total Students</div>
+        </div>
+    </div>
+</div>
+
 <div class="card">
     <div class="card-body p-0">
         <table class="table mb-0">
@@ -26,47 +48,35 @@
                 </tr>
             </thead>
             <tbody>
-                {% for item in summary %}
+                {% for item in report_data %}
                 <tr>
                     <td>{{ forloop.counter }}</td>
-                    <td class="fw-semibold">{{ item.student__name }}</td>
-                    <td><span class="text-success fw-bold">{{ item.present_count }}</span></td>
-                    <td><span class="text-danger fw-bold">{{ item.absent_count }}</span></td>
+                    <td class="fw-semibold">{{ item.student }}</td>
+                    <td><span class="text-success fw-bold">{{ item.present }}</span></td>
+                    <td><span class="text-danger fw-bold">{{ item.absent }}</span></td>
                     <td>
-                        {% with total=item.present_count|add:item.absent_count %}
-                        {% if total > 0 %}
-                            {% widthratio item.present_count total 100 as pct %}
-                            <div class="d-flex align-items-center gap-2">
-                                <div class="progress flex-grow-1" style="height:8px;">
-                                    <div class="progress-bar
-                                        {% if pct >= 75 %}bg-success
-                                        {% elif pct >= 50 %}bg-warning
-                                        {% else %}bg-danger{% endif %}"
-                                        style="width:{{ pct }}%">
-                                    </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="progress flex-grow-1" style="height:8px;">
+                                <div class="progress-bar
+                                    {% if item.percentage >= 75 %}bg-success
+                                    {% elif item.percentage >= 50 %}bg-warning
+                                    {% else %}bg-danger{% endif %}"
+                                    style="width:{{ item.percentage }}%">
                                 </div>
-                                <span class="fw-bold" style="min-width:40px;">{{ pct }}%</span>
                             </div>
-                        {% else %}
-                            <span class="text-muted">No data</span>
-                        {% endif %}
-                        {% endwith %}
+                            <span class="fw-bold" style="min-width:45px;">{{ item.percentage }}%</span>
+                        </div>
                     </td>
                     <td>
-                        {% with total=item.present_count|add:item.absent_count %}
-                        {% if total > 0 %}
-                            {% widthratio item.present_count total 100 as pct %}
-                            {% if pct >= 75 %}
-                                <span class="badge-present">✅ Good</span>
-                            {% elif pct >= 50 %}
-                                <span style="background:#fff8e1;color:#f57f17;padding:4px 10px;border-radius:20px;font-size:0.8rem;">⚠️ Average</span>
-                            {% else %}
-                                <span class="badge-absent">❌ Poor</span>
-                            {% endif %}
+                        {% if item.percentage >= 75 %}
+                            <span class="badge-present">✅ Good</span>
+                        {% elif item.percentage >= 50 %}
+                            <span style="background:#fff8e1;color:#f57f17;padding:4px 10px;border-radius:20px;font-size:0.8rem;">⚠️ Average</span>
+                        {% elif item.percentage > 0 %}
+                            <span class="badge-absent">❌ Poor</span>
                         {% else %}
                             <span style="background:#f5f5f5;color:#9e9e9e;padding:4px 10px;border-radius:20px;font-size:0.8rem;">— No records</span>
                         {% endif %}
-                        {% endwith %}
                     </td>
                 </tr>
                 {% empty %}

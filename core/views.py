@@ -93,17 +93,20 @@ def add_teacher(request):
 @permission_required('core.add_attendance')
 def add_attendance(request):
     if request.method == 'POST':
-        form = AttendanceForm(request.POST)
-        if form.is_valid():
-            attendance = form.save(commit=False)
-            attendance.date = timezone.now().date()   # override date if needed
-            attendance.save()
-            return redirect('attendance')  # redirect after saving
-    else:
-        form = AttendanceForm()
-
-    return render(request, 'add_attendance.html', {'form': form})
-
+        student_id = request.POST.get('student')
+        status = request.POST.get('status')
+        date = request.POST.get('date') or timezone.now().date()
+        if student_id and status:
+            student = Student.objects.get(id=student_id)
+            Attendance.objects.create(student=student, status=status, date=date)
+            return redirect('attendance')
+    students = Student.objects.all()
+    today = timezone.now().date()
+    today_records = Attendance.objects.filter(date=today).select_related('student')
+    return render(request, 'add_attendance.html', {
+        'students': students,
+        'today_records': today_records,
+    })
 # Views for student list
 def student_list(request):
     query = request.GET.get('q')
