@@ -329,7 +329,6 @@ from django.http import JsonResponse
 from django.conf import settings
 from django.db import connection
 
-
 def health_check(request):
     start = time.time()
 
@@ -360,3 +359,144 @@ def health_check(request):
 
     status_code = 200 if db_status == 'healthy' else 503
     return JsonResponse(data, status=status_code)
+
+
+# ── Export Attendance PDF ─────────────────────────────
+from reportlab.lib.pagesizes import A4
+from reportlab.lib import colors
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+from reportlab.lib.units import inch
+from django.http import HttpResponse
+import datetime
+
+
+def export_attendance_pdf(request):
+    # Get data — same as attendance_summary view
+    students = Student.objects.all()
+    report_data = []
+    total_present = 0
+    total_absent = 0
+
+    for student in students:
+        total = Attendance.objects.filter(student=student).count()
+        present = Attendance.objects.filter(student=student, status='Present').count()
+        absent = Attendance.objects.filter(student=student, status='Absent').count()
+        total_present += present
+        total_absent += absent
+        percentage = round((present / total) * 100, 2) if total > 0 else 0
+        report_data.append({
+            'student': student.name,
+            'present': present,
+            'absent': absent,
+            'percentage': percentage,
+        })
+
+    # Create PDF response
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="attendance_report.pdf"'
+
+    doc = SimpleDocTemplate(response, pagesize=A4)
+    styles = getSampleStyleSheet()
+    elements = []
+
+    # ── Title ─────────────────────────────────────────
+    title = Paragraph("<b>Eldoret National Poly ICT Group B</b>", styles['Title'])
+    subtitle = Paragraph("Attendance Summary Report", styles['Heading2'])
+    date_str = Paragraph(
+        f"Generated on: {datetime.datetime.now().strftime('%B %d, %Y at %H:%M')}",
+        styles['Normal']
+    )
+    elements.extend([title, subtitle, date_str, Spacer(1, 0.3 * inch)])
+
+    # ── Summary Stats ─────────────────────────────────
+    stats_data = [
+        ['Total Students', 'Total Present', 'Total Absent'],
+        [str(len(report_data)), str(total_present), str(total_absent)],
+    ]
+    stats_table = Table(stats_data, colWidths=[2 * inch, 2 * inch, 2 * inch])
+    stats_table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#1a237e')),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTSIZE', (0, 1), (-1, 1), 14),
+        ('FONTNAME', (0, 1), (-1, 1), 'Helvetica-Bold'),
+        ('TEXTCOLOR', (0, 1), (0, 1), colors.HexColor('#1a237e')),
+        ('TEXTCOLOR', (1, 1), (1, 1), colors.HexColor('#2e7d32')),
+        ('TEXTCOLOR', (2, 1), (2, 1), colors.HexColor('#c62828')),
+        ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+        ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white]),
+        ('TOPPADDING', (0, 0), (-1, -1), 8),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+    ]))
+    elements.extend([stats_table, Spacer(1, 0.3 * inch)])
+
+    # ── Main Table ────────────────────────────────────
+    table_data = [['#', 'Student Name', 'Days Present', 'Days Absent', 'Attendance %', 'Status']]
+
+    for i, item in enumerate(report_data, 1):
+        if item['percentage'] >= 75:
+            status = 'Good'
+        elif item['percentage'] >= 50:
+            status = 'Average'
+        elif item['percentage'] > 0:
+            status = 'Poor'
+        else:
+            status = 'No Records'
+
+        table_data.append([
+            str(i),
+            item['student'],
+            str(item['present']),
+            str(item['absent']),
+            f"{item['percentage']}%",
+            status,
+        ])
+
+    main_table = Table(table_data, colWidths=[0.4*inch, 2.2*inch, 1.1*inch, 1.1*inch, 1.1*inch, 1.1*inch])
+    main_table.setStyle(TableStyle([
+        # Header
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#1a237e')),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, 0), 10),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        # Rows
+        ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
+        ('FONTSIZE', (0, 1), (-1, -1), 9),
+        ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+        ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#f5f7ff')]),
+        ('TOPPADDING', (0, 0), (-1, -1), 6),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+    ]))
+
+    # Color code the Status column
+    for i, item in enumerate(report_data, 1):
+        if item['percentage'] >= 75:
+            main_table.setStyle(TableStyle([
+                ('TEXTCOLOR', (5, i), (5, i), colors.HexColor('#2e7d32')),
+                ('FONTNAME', (5, i), (5, i), 'Helvetica-Bold'),
+            ]))
+        elif item['percentage'] >= 50:
+            main_table.setStyle(TableStyle([
+                ('TEXTCOLOR', (5, i), (5, i), colors.HexColor('#f57f17')),
+            ]))
+        elif item['percentage'] > 0:
+            main_table.setStyle(TableStyle([
+                ('TEXTCOLOR', (5, i), (5, i), colors.HexColor('#c62828')),
+            ]))
+
+    elements.append(main_table)
+
+    # ── Footer ────────────────────────────────────────
+    elements.append(Spacer(1, 0.3 * inch))
+    footer = Paragraph(
+        "This report was generated automatically by the School Management System.",
+        styles['Italic']
+    )
+    elements.append(footer)
+
+    doc.build(elements)
+    return response

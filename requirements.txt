@@ -16,3 +16,4 @@ tzdata==2025.2
 whitenoise==6.9.0
 django-environ
 Pillow==11.2.1
+reportlab==4.2.5

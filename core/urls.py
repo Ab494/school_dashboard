@@ -49,6 +49,7 @@ urlpatterns = [
 
     # URL patterns for Attendance summary and static pages
     path('attendance-summary/', views.attendance_summary, name='attendance_summary'),
+    path('attendance-summary/export/pdf/', views.export_attendance_pdf, name='export_attendance_pdf'),
 
     # Static page template views (no backend logic)
     path('mission-vision/', views.static_mission_vision, name='mission_vision'),
