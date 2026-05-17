@@ -59,7 +59,7 @@ def attendance(request):
 @permission_required('core.add_student', raise_exception=True)
 def add_student(request):
     if request.method == 'POST':
-        form = StudentForm(request.POST)
+        form = StudentForm(request.POST, request.FILES)
         if form.is_valid():
             try:
                 form.save()

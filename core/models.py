@@ -11,6 +11,12 @@ class Student(models.Model):
     date_added = models.DateTimeField(default=timezone.now)
     admission_number = models.CharField(max_length=20, unique=True)
     photo = models.ImageField(upload_to='student_photos/', null=True, blank=True)
+    @property
+    def photo_url(self):
+        if self.photo and hasattr(self.photo, 'url'):
+            return self.photo.url
+        return None
+
     def __str__(self):
         return self.name
 
