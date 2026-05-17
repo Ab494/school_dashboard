@@ -1,26 +1,115 @@
 {% extends "base.html" %}
-{% block title%}Add Attendance{% endblock %}
+{% block title %}Mark Attendance{% endblock %}
 {% block content %}
-<h2 class="mt-4 mt-3">Mark Attendance</h2>
-<form method="POST" action="{% url 'add_attendance' %}">
-    {% csrf_token %}
-    <div class="mb-3">
-        <label>Student</label>
 
-        <select name="student" class="form-select" required>
-            {% for student in students %}
-            <option value="{{ student.id }}">{{ student.name }}</option>
-            {% endfor %}
-        </select>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h4 class="mb-0 fw-bold"><i class="bi bi-calendar-plus me-2 text-primary"></i>Mark Attendance</h4>
+        <small class="text-muted">Record student attendance for today</small>
     </div>
-    <div class="mb-3">
-        <label>Status</lebel>
-        <select name="status" class="form-select">
-            <option value="Present">Present</option>
-            <option value="Absent">Absent</option>
-        </select>
+    <a href="{% url 'attendance' %}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left me-1"></i> Back to Attendance
+    </a>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-pencil-square me-2"></i>Attendance Form
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{% url 'add_attendance' %}">
+                    {% csrf_token %}
+
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">
+                            <i class="bi bi-person me-1 text-primary"></i>Student
+                        </label>
+                        <select name="student" class="form-select form-select-lg" required>
+                            <option value="" disabled selected>-- Select a student --</option>
+                            {% for student in students %}
+                            <option value="{{ student.id }}">{{ student.name }} ({{ student.admission_number }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">
+                            <i class="bi bi-check-circle me-1 text-primary"></i>Status
+                        </label>
+                        <div class="d-flex gap-3">
+                            <div class="form-check form-check-inline p-3 border rounded flex-grow-1 text-center" style="cursor:pointer;" onclick="document.getElementById('present').click()">
+                                <input class="form-check-input" type="radio" name="status" id="present" value="Present" checked>
+                                <label class="form-check-label fw-semibold text-success" for="present" style="cursor:pointer;">
+                                    <i class="bi bi-check-circle-fill d-block fs-3 mb-1"></i>
+                                    Present
+                                </label>
+                            </div>
+                            <div class="form-check form-check-inline p-3 border rounded flex-grow-1 text-center" style="cursor:pointer;" onclick="document.getElementById('absent').click()">
+                                <input class="form-check-input" type="radio" name="status" id="absent" value="Absent">
+                                <label class="form-check-label fw-semibold text-danger" for="absent" style="cursor:pointer;">
+                                    <i class="bi bi-x-circle-fill d-block fs-3 mb-1"></i>
+                                    Absent
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">
+                            <i class="bi bi-calendar me-1 text-primary"></i>Date
+                        </label>
+                        <input type="date" name="date" class="form-control form-control-lg"
+                               value="{% now 'Y-m-d' %}">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-lg w-100">
+                        <i class="bi bi-check2-circle me-2"></i>Mark Attendance
+                    </button>
+                </form>
+            </div>
+        </div>
     </div>
-    <button type="submit" class="btn btn-success">Mark</button>
-</form>
+
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-clock-history me-2"></i>Today's Attendance
+            </div>
+            <div class="card-body p-0">
+                <table class="table mb-0">
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Status</th>
+                            <th>Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for record in today_records %}
+                        <tr>
+                            <td class="fw-semibold">{{ record.student.name }}</td>
+                            <td>
+                                {% if record.status == 'Present' %}
+                                <span class="badge-present">✅ Present</span>
+                                {% else %}
+                                <span class="badge-absent">❌ Absent</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-muted small">{{ record.date }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="3" class="text-center text-muted py-3">
+                                No attendance marked today yet
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
-            
