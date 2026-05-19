@@ -5,24 +5,43 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
         <h4 class="mb-0 fw-bold"><i class="bi bi-people me-2 text-primary"></i>Student List</h4>
-        <small class="text-muted">{{ page_obj.paginator.count }} total students</small>
+        <small class="text-muted">{{ total_count }} student{{ total_count|pluralize }} found</small>
     </div>
     <a href="{% url 'add_student' %}" class="btn btn-primary">
         <i class="bi bi-person-plus me-1"></i> Add Student
     </a>
 </div>
 
-<!-- Search -->
+<!-- Search and Filter -->
 <div class="card mb-4">
     <div class="card-body">
-        <form method="get" class="d-flex gap-2" role="search">
-            <input type="text" name="q" class="form-control" placeholder="Search by name or admission number..." value="{{ request.GET.q }}">
-            <button type="submit" class="btn btn-primary px-4">
-                <i class="bi bi-search"></i>
-            </button>
-            {% if request.GET.q %}
-            <a href="{% url 'students' %}" class="btn btn-outline-secondary">Clear</a>
-            {% endif %}
+        <form method="get" class="row g-2">
+            <div class="col-md-7">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    <input type="text" name="q" class="form-control"
+                           placeholder="Search by name or admission number..."
+                           value="{{ query }}">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <select name="class_level" class="form-select">
+                    <option value="">All Classes</option>
+                    {% for level in class_levels %}
+                    <option value="{{ level }}" {% if class_filter == level %}selected{% endif %}>
+                        {{ level }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2 d-flex gap-2">
+                <button type="submit" class="btn btn-primary flex-grow-1">Filter</button>
+                {% if query or class_filter %}
+                <a href="{% url 'students' %}" class="btn btn-outline-secondary">
+                    <i class="bi bi-x"></i>
+                </a>
+                {% endif %}
+            </div>
         </form>
     </div>
 </div>
@@ -48,7 +67,8 @@
                     <td>{{ forloop.counter }}</td>
                     <td>
                         {% if student.photo_url %}
-                        <img src="{{ student.photo_url }}" alt="Photo" width="40" height="40" style="border-radius:50%;object-fit:cover;border:2px solid #e0e0e0;">
+                        <img src="{{ student.photo_url }}" alt="Photo" width="40" height="40"
+                             style="border-radius:50%;object-fit:cover;border:2px solid #e0e0e0;">
                         {% else %}
                         <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#1a237e,#42a5f5);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:1rem;">
                             {{ student.name|first|upper }}
@@ -70,8 +90,13 @@
                 <tr>
                     <td colspan="7" class="text-center py-5 text-muted">
                         <i class="bi bi-people display-4 d-block mb-2"></i>
-                        No students found.
-                        <a href="{% url 'add_student' %}" class="d-block mt-2">Add the first student</a>
+                        {% if query or class_filter %}
+                            No students match your search.
+                            <a href="{% url 'students' %}" class="d-block mt-2">Clear filters</a>
+                        {% else %}
+                            No students yet.
+                            <a href="{% url 'add_student' %}" class="d-block mt-2">Add the first student</a>
+                        {% endif %}
                     </td>
                 </tr>
                 {% endfor %}
@@ -82,15 +107,22 @@
     <!-- Pagination -->
     {% if page_obj.paginator.num_pages > 1 %}
     <div class="card-footer d-flex justify-content-between align-items-center">
-        <small class="text-muted">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</small>
+        <small class="text-muted">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+            ({{ page_obj.paginator.count }} total)
+        </small>
         <div class="d-flex gap-1">
             {% if page_obj.has_previous %}
-            <a href="?page=1{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-chevron-double-left"></i></a>
-            <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-chevron-left"></i></a>
+            <a href="?page=1{% if query %}&q={{ query }}{% endif %}{% if class_filter %}&class_level={{ class_filter }}{% endif %}"
+               class="btn btn-sm btn-outline-secondary"><i class="bi bi-chevron-double-left"></i></a>
+            <a href="?page={{ page_obj.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% if class_filter %}&class_level={{ class_filter }}{% endif %}"
+               class="btn btn-sm btn-outline-secondary"><i class="bi bi-chevron-left"></i></a>
             {% endif %}
             {% if page_obj.has_next %}
-            <a href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-chevron-right"></i></a>
-            <a href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-chevron-double-right"></i></a>
+            <a href="?page={{ page_obj.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% if class_filter %}&class_level={{ class_filter }}{% endif %}"
+               class="btn btn-sm btn-outline-secondary"><i class="bi bi-chevron-right"></i></a>
+            <a href="?page={{ page_obj.paginator.num_pages }}{% if query %}&q={{ query }}{% endif %}{% if class_filter %}&class_level={{ class_filter }}{% endif %}"
+               class="btn btn-sm btn-outline-secondary"><i class="bi bi-chevron-double-right"></i></a>
             {% endif %}
         </div>
     </div>
