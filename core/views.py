@@ -41,8 +41,37 @@ def dashboard(request):
 # Students list, logins required to view students details
 @login_required
 def students(request):
-    students = Student.objects.all()
-    return render(request, 'students.html', {'students': students})
+    query = request.GET.get('q', '')
+    class_filter = request.GET.get('class_level', '')
+
+    students = Student.objects.all().order_by('-date_added')
+
+    # Search by name or admission number
+    if query:
+        students = students.filter(
+            Q(name__icontains=query) | Q(admission_number__icontains=query)
+        )
+
+    # Filter by class level
+    if class_filter:
+        students = students.filter(class_level__icontains=class_filter)
+
+    # Get all unique class levels for filter dropdown
+    class_levels = Student.objects.values_list('class_level', flat=True).distinct()
+
+    # Pagination - 10 students per page
+    paginator = Paginator(students, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'students.html', {
+        'students': page_obj,
+        'page_obj': page_obj,
+        'query': query,
+        'class_filter': class_filter,
+        'class_levels': class_levels,
+        'total_count': students.count(),
+    })
 
 # Teachers views
 def teachers(request):
