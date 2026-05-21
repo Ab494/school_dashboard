@@ -128,6 +128,19 @@ def add_attendance(request):
         if student_id and status:
             student = Student.objects.get(id=student_id)
             Attendance.objects.create(student=student, status=status, date=date)
+
+            # Send email notification if student is absent
+            if status == 'Absent' and student.email:
+                from core.emails.notifications import send_absence_notification
+                from datetime import date as date_type
+                if isinstance(date, str):
+                    from datetime import datetime
+                    date_obj = datetime.strptime(date, '%Y-%m-%d').date()
+                else:
+                    date_obj = date
+                send_absence_notification(student, date_obj)
+                messages.info(request, f"Absence notification sent to {student.email}")
+
             return redirect('attendance')
     students = Student.objects.all()
     today = timezone.now().date()

@@ -156,8 +156,7 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 # Email console for testing
-EMAIL_BACKEND = 'django.core.email.backends.console.EmailBackend'
-DEFAULT_FROM_EMAIL = 'admin@colloge.edu'
+DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='noreply@school.com')
 
 # Print settings for debugging
 
@@ -245,3 +244,13 @@ import os
 _logs_dir = BASE_DIR / 'logs'
 if not os.path.exists(_logs_dir):
     os.makedirs(_logs_dir, exist_ok=True)
+
+
+# ── Email Configuration (SendGrid) ───────────────────
+
+
+# ── Email Configuration (SendGrid Web API) ────────────
+EMAIL_BACKEND = 'sendgrid_backend.SendgridBackend'
+SENDGRID_API_KEY = env('SENDGRID_API_KEY', default='')
+SENDGRID_SANDBOX_MODE_IN_DEBUG = False
+DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='noreply@school.com')
