@@ -240,7 +240,6 @@ LOGGING = {
 # ── Override logging handlers based on environment ────
 # In Docker build (collectstatic), logs dir may not exist
 # Only use file handlers if logs directory exists
-import os
 _logs_dir = BASE_DIR / 'logs'
 if not os.path.exists(_logs_dir):
     os.makedirs(_logs_dir, exist_ok=True)
